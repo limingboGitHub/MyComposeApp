@@ -21,7 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,7 +47,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyTheme {
-                MyApp{ lookDetails(it) }
+                MyApp {
+                    lookDetails(it)
+                }
             }
         }
     }
@@ -52,35 +57,36 @@ class MainActivity : AppCompatActivity() {
 
 // Start building your app here!
 @Composable
-fun MyApp(itemClick:(id:Int)->Unit = {}) {
+fun MyApp(itemClick: (id: Int) -> Unit = {}) {
     Surface(
         color = Color.LightGray,
-        modifier = Modifier.fillMaxWidth()) {
+        modifier = Modifier.fillMaxWidth()
+    ) {
 
         val puppies = getPuppies()
-        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally){
-            items(puppies){
-                ItemLayout(it,itemClick)
+        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+            items(puppies) {
+                ItemLayout(it, itemClick)
             }
         }
     }
 }
 
 @Composable
-fun ItemLayout(puppy: Puppy,itemClick:(id:Int)->Unit){
-
+fun ItemLayout(puppy: Puppy, itemClick: (id: Int) -> Unit) {
     ConstraintLayout(
         Modifier
             .padding(5.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(Color.White)
             .clickable { itemClick(puppy.id) }
-            .padding(5.dp)) {
-        val (image,nameText,sexImage,ageText) = createRefs()
+            .padding(5.dp)
+    ) {
+        val (image, nameText, sexImage, ageText) = createRefs()
 
         val imagePainter = painterResource(getPuppyImageRes(puppy.name))
         Image(
-            imagePainter,"",
+            imagePainter, "",
             Modifier
                 .width(250.dp)
                 .wrapContentHeight()
@@ -88,43 +94,44 @@ fun ItemLayout(puppy: Puppy,itemClick:(id:Int)->Unit){
                 .clip(RoundedCornerShape(4.dp))
                 .constrainAs(image) {
                     top.linkTo(parent.top, margin = 10.dp)
-                })
+                }
+        )
 
         Text(
             text = puppy.name,
-            modifier = Modifier.constrainAs(nameText){
-                top.linkTo(image.bottom,margin = 10.dp)
+            modifier = Modifier.constrainAs(nameText) {
+                top.linkTo(image.bottom, margin = 10.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            })
+            }
+        )
 
         val sexImagePainter = painterResource(if (puppy.sex == "M") R.drawable.male else R.drawable.female)
         Image(
-            sexImagePainter,"",
+            sexImagePainter, "",
             Modifier
                 .width(24.dp)
                 .constrainAs(sexImage) {
                     start.linkTo(nameText.end, margin = 5.dp)
                     top.linkTo(nameText.top)
                     bottom.linkTo(nameText.bottom)
-                })
+                }
+        )
 
         Text(
             "${puppy.age} days",
             Modifier
-                .constrainAs(ageText){
-                top.linkTo(nameText.bottom,margin = 2.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
+                .constrainAs(ageText) {
+                    top.linkTo(nameText.bottom, margin = 2.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
     }
-
-
-
 }
 
-fun getPuppyImageRes(name:String):Int{
-    return when(name){
+fun getPuppyImageRes(name: String): Int {
+    return when (name) {
         "Golden retriever" -> R.drawable.golden
         "Pug" -> R.drawable.pug
         "Teddy" -> R.drawable.teddy
@@ -135,17 +142,16 @@ fun getPuppyImageRes(name:String):Int{
     }
 }
 
-private fun getPuppies():List<Puppy>{
+private fun getPuppies(): List<Puppy> {
     return listOf(
-        Puppy(0,"Golden retriever",10,"M"),
-        Puppy(1,"Pug",16,"F"),
-        Puppy(2,"Teddy",30,"M"),
-        Puppy(3,"Shepherd",8,"M"),
-        Puppy(4,"Shiba inu",12,"F"),
-        Puppy(5,"Corgi",22,"F"),
+        Puppy(0, "Golden retriever", 10, "M"),
+        Puppy(1, "Pug", 16, "F"),
+        Puppy(2, "Teddy", 30, "M"),
+        Puppy(3, "Shepherd", 8, "M"),
+        Puppy(4, "Shiba inu", 12, "F"),
+        Puppy(5, "Corgi", 22, "F"),
     )
 }
-
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
